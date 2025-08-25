@@ -14,7 +14,14 @@ const guessForm = document.getElementById('guessForm');
 const resultDiv = document.getElementById('result');
 
 document.getElementById('playBtn').addEventListener('click', startLevel);
-document.getElementById('anotherClueBtn').addEventListener('click', showAnotherClue);
+document.getElementById('anotherClueBtn').addEventListener('click', () => {
+  if (cluePoints > 0) {
+    deductPoints(10);
+    showAnotherClue();
+  } else {
+    clueText.textContent = "❗ You're out of points!";
+  }
+});
 document.getElementById('genderSelect').addEventListener('change', (e) => {
   populateDropdowns(e.target.value);
 });
@@ -35,15 +42,12 @@ function startLevel() {
   shownClues = [];
   cluePoints = 100;
 
+  updateUI();
   showAnotherClue(true);
 
   clueBox.classList.remove('hidden');
   guessForm.classList.remove('hidden');
   resultDiv.classList.add('hidden');
-
-  levelEl.textContent = currentLevel;
-  pointsLeftEl.textContent = cluePoints;
-  populateDropdowns('all');
 }
 
 function showAnotherClue(force = false) {
@@ -58,9 +62,7 @@ function showAnotherClue(force = false) {
   shownClues.push(newClue);
   clueText.textContent = newClue;
 
-  if (!force) {
-    deductPoints(10);
-  }
+  updateUI();
 }
 
 function makeGuess() {
@@ -68,21 +70,26 @@ function makeGuess() {
 
   if (selectedName === selectedCharacter.name) {
     totalScore += cluePoints;
-    scoreEl.textContent = totalScore;
     resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 You earned ${cluePoints} points!`;
-    resultDiv.classList.remove('hidden');
     currentLevel++;
-
     setTimeout(startLevel, 2000);
   } else {
-    resultDiv.textContent = `❌ Nope, it's not ${selectedName}. -10 points`;
-    resultDiv.classList.remove('hidden');
+    resultDiv.textContent = `❌ Wrong guess! You lost 10 points.`;
     deductPoints(10);
   }
+
+  resultDiv.classList.remove('hidden');
+  updateUI();
 }
 
 function deductPoints(amount) {
   cluePoints = Math.max(cluePoints - amount, 0);
+  updateUI();
+}
+
+function updateUI() {
+  levelEl.textContent = currentLevel;
+  scoreEl.textContent = totalScore;
   pointsLeftEl.textContent = cluePoints;
 }
 

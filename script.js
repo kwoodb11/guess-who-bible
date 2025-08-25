@@ -35,10 +35,8 @@ function startLevel() {
   shownClues = [];
   cluePoints = 100;
 
-  // Show initial clue
   showAnotherClue(true);
 
-  // UI
   clueBox.classList.remove('hidden');
   guessForm.classList.remove('hidden');
   resultDiv.classList.add('hidden');
@@ -49,12 +47,8 @@ function startLevel() {
 }
 
 function showAnotherClue(force = false) {
-  if (!force && cluePoints <= 10) {
-    clueText.textContent = "⚠️ No more clues. Please guess!";
-    return;
-  }
-
   const remainingClues = selectedCharacter.clues.filter(clue => !shownClues.includes(clue));
+
   if (remainingClues.length === 0) {
     clueText.textContent = "🧠 You've seen all the clues!";
     return;
@@ -65,9 +59,14 @@ function showAnotherClue(force = false) {
   clueText.textContent = newClue;
 
   if (!force) {
-    cluePoints -= 10;
-    pointsLeftEl.textContent = cluePoints;
+    if (cluePoints > 10) {
+      cluePoints -= 10;
+    } else {
+      cluePoints = 0;
+    }
   }
+
+  pointsLeftEl.textContent = cluePoints;
 }
 
 function populateDropdowns(gender) {
@@ -90,10 +89,11 @@ function makeGuess() {
   if (selectedName === selectedCharacter.name) {
     totalScore += cluePoints;
     scoreEl.textContent = totalScore;
-    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>. <br>🏆 You earned ${cluePoints} points!`;
+    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 You earned ${cluePoints} points!`;
     resultDiv.classList.remove('hidden');
     currentLevel++;
-    setTimeout(startLevel, 2000); // Auto-next level after 2 seconds
+
+    setTimeout(startLevel, 2000); // Auto-next level
   } else {
     resultDiv.textContent = `❌ Nope, it's not ${selectedName}. Try again!`;
     resultDiv.classList.remove('hidden');

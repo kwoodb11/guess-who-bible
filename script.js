@@ -1,16 +1,16 @@
-let selectedCharacter = null;
-let currentLevel = 1;
+let currentRound = 1;
+let currentCharacterIndex = 0;
 let totalScore = 0;
-let cluePoints = 100;
 let roundScore = 0;
+let cluePoints = 100;
 let shownClues = [];
 let wrongGuesses = 0;
 
 const roundSize = 10;
-const maxCluesPerLevel = 5;
-const maxWrongGuessesPerLevel = 3;
-const requiredTotalPerRound = 800;
-const maxPointsPerLevel = 100;
+const maxCluesPerCharacter = 5;
+const maxWrongGuesses = 3;
+const pointsPerRoundRequired = 800;
+const maxPointsPerCharacter = 100;
 
 const levelEl = document.getElementById('level');
 const scoreEl = document.getElementById('score');
@@ -21,9 +21,9 @@ const guessForm = document.getElementById('guessForm');
 const resultDiv = document.getElementById('result');
 const roundMessage = document.getElementById('roundMessage');
 
-document.getElementById('playBtn').addEventListener('click', startLevel);
+document.getElementById('playBtn').addEventListener('click', startCharacter);
 document.getElementById('anotherClueBtn').addEventListener('click', () => {
-  if (shownClues.length >= maxCluesPerLevel) {
+  if (shownClues.length >= maxCluesPerCharacter) {
     clueText.textContent = "❗ No more clues allowed.";
     return;
   }
@@ -35,33 +35,40 @@ document.getElementById('genderSelect').addEventListener('change', (e) => {
 });
 document.getElementById('guessBtn').addEventListener('click', makeGuess);
 
-function startLevel() {
-  if (currentLevel > characters.length) {
-    clueText.textContent = "🎉 You completed all characters!";
-    guessForm.classList.add('hidden');
+function getRoundCharacters() {
+  const start = (currentRound - 1) * roundSize;
+  const end = start + roundSize;
+  return characters.slice(start, end);
+}
+
+function startCharacter() {
+  const roundCharacters = getRoundCharacters();
+
+  if (currentCharacterIndex >= roundCharacters.length) {
+    if (roundScore >= pointsPerRoundRequired) {
+      roundMessage.innerHTML = `🎉 You passed Level ${currentRound} with ${roundScore} points! Moving to next level.`;
+      currentRound++;
+    } else {
+      roundMessage.innerHTML = `❌ You scored ${roundScore}. You need ${pointsPerRoundRequired} to pass Level ${currentRound}.<br>Retrying...`;
+    }
+
+    roundMessage.classList.remove('hidden');
+    setTimeout(() => roundMessage.classList.add('hidden'), 5000);
+
+    currentCharacterIndex = 0;
+    roundScore = 0;
+  }
+
+  const currentCharacters = getRoundCharacters();
+  if (!currentCharacters[currentCharacterIndex]) {
+    clueText.textContent = "🎉 No more characters available!";
     return;
   }
 
-  if ((currentLevel - 1) % roundSize === 0 && currentLevel > 1) {
-    const roundNumber = Math.floor((currentLevel - 1) / roundSize);
-    if (roundScore >= requiredTotalPerRound) {
-      roundMessage.innerHTML = `🎉 You passed Round ${roundNumber} with ${roundScore} points!`;
-      roundMessage.classList.remove('hidden');
-      setTimeout(() => roundMessage.classList.add('hidden'), 4000);
-      roundScore = 0;
-    } else {
-      roundMessage.innerHTML = `❌ You failed Round ${roundNumber}. You needed ${requiredTotalPerRound} points.<br>Restarting round...`;
-      roundMessage.classList.remove('hidden');
-      setTimeout(() => roundMessage.classList.add('hidden'), 5000);
-      currentLevel = currentLevel - roundSize;
-      roundScore = 0;
-    }
-  }
-
-  selectedCharacter = characters[currentLevel - 1];
+  selectedCharacter = currentCharacters[currentCharacterIndex];
+  cluePoints = maxPointsPerCharacter;
   shownClues = [];
   wrongGuesses = 0;
-  cluePoints = maxPointsPerLevel;
 
   showAnotherClue(true);
   updateUI();
@@ -72,39 +79,37 @@ function startLevel() {
 }
 
 function showAnotherClue(force = false) {
-  const remainingClues = selectedCharacter.clues.filter(clue => !shownClues.includes(clue));
-
-  if (remainingClues.length === 0) {
+  const remaining = selectedCharacter.clues.filter(clue => !shownClues.includes(clue));
+  if (remaining.length === 0) {
     clueText.textContent = "🧠 You've seen all the clues!";
     return;
   }
 
-  const clue = remainingClues[Math.floor(Math.random() * remainingClues.length)];
+  const clue = remaining[Math.floor(Math.random() * remaining.length)];
   shownClues.push(clue);
   clueText.textContent = clue;
-
   updateUI();
 }
 
 function makeGuess() {
-  const selectedName = document.getElementById('nameSelect').value;
+  const guess = document.getElementById('nameSelect').value;
 
-  if (selectedName === selectedCharacter.name) {
+  if (guess === selectedCharacter.name) {
     totalScore += cluePoints;
     roundScore += cluePoints;
-
-    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>+${cluePoints} points.`;
-    currentLevel++;
-    setTimeout(startLevel, 2500);
+    resultDiv.innerHTML = `✅ Correct! +${cluePoints} points`;
+    currentCharacterIndex++;
+    setTimeout(startCharacter, 2500);
   } else {
     wrongGuesses++;
     deductPoints(10);
-    if (wrongGuesses >= maxWrongGuessesPerLevel) {
-      resultDiv.innerHTML = `❌ You used all ${maxWrongGuessesPerLevel} guesses.<br>The correct answer was <strong>${selectedCharacter.name}</strong>.`;
-      currentLevel++;
-      setTimeout(startLevel, 2500);
+
+    if (wrongGuesses >= maxWrongGuesses) {
+      resultDiv.innerHTML = `❌ Out of guesses! The answer was <strong>${selectedCharacter.name}</strong>`;
+      currentCharacterIndex++;
+      setTimeout(startCharacter, 2500);
     } else {
-      resultDiv.innerHTML = `❌ Wrong guess! (${wrongGuesses}/${maxWrongGuessesPerLevel}) -10 points.`;
+      resultDiv.innerHTML = `❌ Wrong! (${wrongGuesses}/${maxWrongGuesses}) -10 points`;
     }
   }
 
@@ -118,7 +123,7 @@ function deductPoints(amount) {
 }
 
 function updateUI() {
-  levelEl.textContent = currentLevel;
+  levelEl.textContent = currentRound;
   scoreEl.textContent = totalScore;
   pointsLeftEl.textContent = cluePoints;
 }

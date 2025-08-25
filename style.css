@@ -17,6 +17,7 @@ body {
 
 h1 {
   color: #333;
+  margin-bottom: 1rem;
 }
 
 button {
@@ -49,4 +50,13 @@ select {
   font-size: 1.2rem;
   font-weight: bold;
   margin-top: 20px;
+}
+
+.game-info {
+  margin-bottom: 20px;
+  background: #eaf4ff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #333;
 }

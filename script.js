@@ -29,7 +29,7 @@ document.getElementById('guessBtn').addEventListener('click', makeGuess);
 
 function startLevel() {
   if (usedCharacters.length === characters.length) {
-    clueText.textContent = "🎉 You've completed all available levels!";
+    clueText.textContent = "🎉 All levels complete!";
     guessForm.classList.add('hidden');
     return;
   }
@@ -42,8 +42,8 @@ function startLevel() {
   shownClues = [];
   cluePoints = 100;
 
-  updateUI();
   showAnotherClue(true);
+  updateUI();
 
   clueBox.classList.remove('hidden');
   guessForm.classList.remove('hidden');
@@ -58,9 +58,9 @@ function showAnotherClue(force = false) {
     return;
   }
 
-  const newClue = remainingClues[Math.floor(Math.random() * remainingClues.length)];
-  shownClues.push(newClue);
-  clueText.textContent = newClue;
+  const clue = remainingClues[Math.floor(Math.random() * remainingClues.length)];
+  shownClues.push(clue);
+  clueText.textContent = clue;
 
   updateUI();
 }
@@ -70,12 +70,12 @@ function makeGuess() {
 
   if (selectedName === selectedCharacter.name) {
     totalScore += cluePoints;
-    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 You earned ${cluePoints} points!`;
+    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 +${cluePoints} points!`;
     currentLevel++;
     setTimeout(startLevel, 2000);
   } else {
-    resultDiv.textContent = `❌ Wrong guess! You lost 10 points.`;
     deductPoints(10);
+    resultDiv.textContent = `❌ Incorrect! -10 points. Try again.`;
   }
 
   resultDiv.classList.remove('hidden');

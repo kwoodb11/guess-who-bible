@@ -59,13 +59,30 @@ function showAnotherClue(force = false) {
   clueText.textContent = newClue;
 
   if (!force) {
-    if (cluePoints > 10) {
-      cluePoints -= 10;
-    } else {
-      cluePoints = 0;
-    }
+    deductPoints(10);
   }
+}
 
+function makeGuess() {
+  const selectedName = document.getElementById('nameSelect').value;
+
+  if (selectedName === selectedCharacter.name) {
+    totalScore += cluePoints;
+    scoreEl.textContent = totalScore;
+    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 You earned ${cluePoints} points!`;
+    resultDiv.classList.remove('hidden');
+    currentLevel++;
+
+    setTimeout(startLevel, 2000);
+  } else {
+    resultDiv.textContent = `❌ Nope, it's not ${selectedName}. -10 points`;
+    resultDiv.classList.remove('hidden');
+    deductPoints(10);
+  }
+}
+
+function deductPoints(amount) {
+  cluePoints = Math.max(cluePoints - amount, 0);
   pointsLeftEl.textContent = cluePoints;
 }
 
@@ -81,21 +98,4 @@ function populateDropdowns(gender) {
     option.textContent = char.name;
     nameSelect.appendChild(option);
   });
-}
-
-function makeGuess() {
-  const selectedName = document.getElementById('nameSelect').value;
-
-  if (selectedName === selectedCharacter.name) {
-    totalScore += cluePoints;
-    scoreEl.textContent = totalScore;
-    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 You earned ${cluePoints} points!`;
-    resultDiv.classList.remove('hidden');
-    currentLevel++;
-
-    setTimeout(startLevel, 2000); // Auto-next level
-  } else {
-    resultDiv.textContent = `❌ Nope, it's not ${selectedName}. Try again!`;
-    resultDiv.classList.remove('hidden');
-  }
 }

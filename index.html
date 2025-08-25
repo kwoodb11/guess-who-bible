@@ -9,11 +9,19 @@
 <body>
   <div class="container">
     <h1>Guess Who - Bible Characters</h1>
-    <button id="playBtn">Play</button>
+
+    <div class="game-info">
+      <p>🎯 <strong>Level:</strong> <span id="level">1</span></p>
+      <p>⭐ <strong>Points:</strong> <span id="score">0</span></p>
+      <p>🔢 <strong>Clue Points Left:</strong> <span id="pointsLeft">100</span></p>
+    </div>
+
+    <button id="playBtn">Start Game</button>
     
     <div id="clueBox" class="hidden">
       <h2>Clue:</h2>
       <p id="clueText">Click play to start</p>
+      <button id="anotherClueBtn">Another Clue (-10 pts)</button>
     </div>
 
     <div id="guessForm" class="hidden">

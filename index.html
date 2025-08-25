@@ -1,47 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Guess Who - Bible Characters</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="container">
-    <h1>Guess Who - Bible Characters</h1>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f4f8;
+  text-align: center;
+  padding: 2rem;
+  margin: 0;
+}
 
-    <div class="game-info">
-      <p>🎯 <strong>Level:</strong> <span id="level">1</span></p>
-      <p>⭐ <strong>Points:</strong> <span id="score">0</span></p>
-      <p>🔢 <strong>Clue Points Left:</strong> <span id="pointsLeft">100</span></p>
-    </div>
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-    <button id="playBtn">Start Game</button>
-    
-    <div id="clueBox" class="hidden">
-      <h2>Clue:</h2>
-      <p id="clueText">Click play to start</p>
-      <button id="anotherClueBtn">Another Clue (-10 pts)</button>
-    </div>
+h1 {
+  color: #333;
+  margin-bottom: 1rem;
+}
 
-    <div id="guessForm" class="hidden">
-      <label for="gender">Select Gender:</label>
-      <select id="genderSelect">
-        <option value="all">All</option>
-        <option value="male">Boy</option>
-        <option value="female">Girl</option>
-      </select>
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
 
-      <label for="name">Select Name:</label>
-      <select id="nameSelect"></select>
+button:hover {
+  background: #45a049;
+}
 
-      <button id="guessBtn">Guess</button>
-    </div>
+select {
+  padding: 8px;
+  margin: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
 
-    <div id="result" class="hidden"></div>
-  </div>
+.hidden {
+  display: none;
+}
 
-  <script src="characters.js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+#result {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.game-info {
+  margin-bottom: 20px;
+  background: #eaf4ff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: #333;
+}

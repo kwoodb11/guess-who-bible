@@ -1,9 +1,16 @@
 let selectedCharacter = null;
-let usedCharacters = [];
 let currentLevel = 1;
 let totalScore = 0;
 let cluePoints = 100;
 let shownClues = [];
+
+const requiredPoints = [
+  50, 60, 70, 80, 90, 100, 110, 120, 130, 140, // levels 1–10
+  150, 160, 170, 180, 190, 200, 210, 220, 230, 240, // 11–20
+  250, 260, 270, 280, 290, 300, 310, 320, 330, 340, // 21–30
+  350, 360, 370, 380, 390, 400, 410, 420, 430, 440, // 31–40
+  450, 460, 470, 480, 490, 500, 510, 520, 530, 540  // 41–50
+];
 
 const levelEl = document.getElementById('level');
 const scoreEl = document.getElementById('score');
@@ -28,22 +35,18 @@ document.getElementById('genderSelect').addEventListener('change', (e) => {
 document.getElementById('guessBtn').addEventListener('click', makeGuess);
 
 function startLevel() {
-  if (usedCharacters.length === characters.length) {
-    clueText.textContent = "🎉 All levels complete!";
+  if (currentLevel > characters.length) {
+    clueText.textContent = "🎉 You've completed all available levels!";
     guessForm.classList.add('hidden');
     return;
   }
 
-  do {
-    selectedCharacter = characters[Math.floor(Math.random() * characters.length)];
-  } while (usedCharacters.includes(selectedCharacter.name));
-
-  usedCharacters.push(selectedCharacter.name);
+  selectedCharacter = characters[currentLevel - 1];
   shownClues = [];
   cluePoints = 100;
 
-  showAnotherClue(true);
   updateUI();
+  showAnotherClue(true);
 
   clueBox.classList.remove('hidden');
   guessForm.classList.remove('hidden');
@@ -69,13 +72,20 @@ function makeGuess() {
   const selectedName = document.getElementById('nameSelect').value;
 
   if (selectedName === selectedCharacter.name) {
-    totalScore += cluePoints;
-    resultDiv.innerHTML = `✅ Correct! It was <strong>${selectedCharacter.name}</strong>.<br>🏆 +${cluePoints} points!`;
-    currentLevel++;
-    setTimeout(startLevel, 2000);
+    const needed = requiredPoints[currentLevel - 1];
+
+    if (cluePoints >= needed) {
+      totalScore += cluePoints;
+      resultDiv.innerHTML = `✅ Correct! You scored ${cluePoints} points.<br>🔓 You unlocked the next level!`;
+      currentLevel++;
+    } else {
+      resultDiv.innerHTML = `✅ Correct, but you only scored ${cluePoints} points.<br>🔒 You need at least ${needed} points to unlock the next level. Try again.`;
+    }
+
+    setTimeout(startLevel, 3000);
   } else {
+    resultDiv.textContent = `❌ Wrong guess! -10 points.`;
     deductPoints(10);
-    resultDiv.textContent = `❌ Incorrect! -10 points. Try again.`;
   }
 
   resultDiv.classList.remove('hidden');

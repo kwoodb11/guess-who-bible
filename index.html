@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guess Who - Bible Characters</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Guess Who - Bible Characters</h1>
+    <button id="playBtn">Play</button>
+    
+    <div id="clueBox" class="hidden">
+      <h2>Clue:</h2>
+      <p id="clueText">Click play to start</p>
+    </div>
+
+    <div id="guessForm" class="hidden">
+      <label for="gender">Select Gender:</label>
+      <select id="genderSelect">
+        <option value="all">All</option>
+        <option value="male">Boy</option>
+        <option value="female">Girl</option>
+      </select>
+
+      <label for="name">Select Name:</label>
+      <select id="nameSelect"></select>
+
+      <button id="guessBtn">Guess</button>
+    </div>
+
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <script src="characters.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

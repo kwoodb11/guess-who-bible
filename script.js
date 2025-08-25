@@ -19,6 +19,7 @@ const clueText = document.getElementById('clueText');
 const clueBox = document.getElementById('clueBox');
 const guessForm = document.getElementById('guessForm');
 const resultDiv = document.getElementById('result');
+const roundMessage = document.getElementById('roundMessage');
 
 document.getElementById('playBtn').addEventListener('click', startLevel);
 document.getElementById('anotherClueBtn').addEventListener('click', () => {
@@ -41,13 +42,17 @@ function startLevel() {
     return;
   }
 
-  // Round check
   if ((currentLevel - 1) % roundSize === 0 && currentLevel > 1) {
+    const roundNumber = Math.floor((currentLevel - 1) / roundSize);
     if (roundScore >= requiredTotalPerRound) {
-      alert(`✅ Round Passed! You scored ${roundScore} points.`);
+      roundMessage.innerHTML = `🎉 You passed Round ${roundNumber} with ${roundScore} points!`;
+      roundMessage.classList.remove('hidden');
+      setTimeout(() => roundMessage.classList.add('hidden'), 4000);
       roundScore = 0;
     } else {
-      alert(`❌ Round Failed. You needed ${requiredTotalPerRound} points. Restarting round...`);
+      roundMessage.innerHTML = `❌ You failed Round ${roundNumber}. You needed ${requiredTotalPerRound} points.<br>Restarting round...`;
+      roundMessage.classList.remove('hidden');
+      setTimeout(() => roundMessage.classList.add('hidden'), 5000);
       currentLevel = currentLevel - roundSize;
       roundScore = 0;
     }

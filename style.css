@@ -60,3 +60,14 @@ select {
   font-size: 1.1rem;
   color: #333;
 }
+
+.round-banner {
+  background-color: #fff5cc;
+  border: 2px solid #ffd966;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 8px;
+  color: #996600;
+}
